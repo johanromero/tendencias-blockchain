@@ -1,0 +1,164 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<script src="script/jquery-3.3.1.min.js"></script>
+<script src="script/web3.min.js"></script>
+</head>
+<body>
+        <form class="container">
+                <label >ID</label>
+                <input id="id" type="text" />
+                <label>Name</label>
+                <input id="name" type="text" />
+                <label>Surname</label>
+                <input id="surname" type="text" />
+                <label>Password</label>
+                <input id="password" type="password" />
+                <label>Email</label>
+                <input id="email" type="text" />
+                <label>Active</label>
+                <input id="activ" type="text" />
+                <input id="button" type="button"> BUTTON </input>
+                <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+
+                <label id="result"></label>
+            </form>
+            <script>
+            
+            if (typeof web3 !== 'undefined') {
+           web3 = new Web3(web3.currentProvider);
+       } else {
+           web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+       }
+
+       web3.eth.defaultAccount = web3.eth.accounts[0];
+
+       var TendenciasContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"name": "_active",
+				"type": "bool"
+			},
+			{
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"name": "_surname",
+				"type": "string"
+			},
+			{
+				"name": "_password",
+				"type": "string"
+			},
+			{
+				"name": "_email",
+				"type": "string"
+			}
+		],
+		"name": "createUser",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getUser",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "bool"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "active",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "surname",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "password",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "email",
+				"type": "string"
+			}
+		],
+		"name": "UserCreated",
+		"type": "event"
+	}
+]);
+
+       var Tendencias = TendenciasContract.at('0x0591a3cb1b6007e783f6d05c9552151f2180ffdd');
+
+       Tendencias.getUser(function(error, result) {
+           if (!error) {
+               $("#result").html('Results:' + result[0] +',' 
+                                    + result[1]+ result[2] +',' 
+                                    + result[3]+ result[4] +',' 
+                                    + result[5]); 
+           } else
+                console.log(error);
+       });
+
+       $("#button").click(function() {
+           //$("#loader").show();
+           Tendencias.createUser($("#id").val(), $("#name").val(), $("#surname").val(), 'true', $("#email").val(), $("#password").val() );
+       });
+
+            </script>
+</body>
+
+</html>
